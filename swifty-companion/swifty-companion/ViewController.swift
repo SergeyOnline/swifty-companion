@@ -25,35 +25,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		tokenPost { token in
 			self.token = token
 		}
-		
-		
-		
-		
-		
-//		tokenPost { token in
-//			getUsers(user: "sbr", params: token) { users in
-//				for user in users {
-//					self.persons.append(user.login)
-//				}
-//				print(self.persons)
-//				DispatchQueue.main.async {
-//					self.tableView.reloadData()
-//					print("COUNT: \(self.persons.count)")
-//				}
-//			}
-////			self.token = token
-//		}
-		DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+		DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
 			print("Token load")
-			print(self.token)
 		}
 		
 	}
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
-		
 		
 		self.navigationItem.title = "42 Intra"
 		view.backgroundColor = .systemGray6
@@ -83,33 +62,27 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		return nil
 	}
 	
-	func findPersonInBackgroundFromArray(array: [String], searchText: String) {
-		
-		getUsers(user: "sbr", params: token) { users in
-			for user in users {
-				self.persons.append(user.login)
-			}
-			print(self.persons)
-			DispatchQueue.main.async {
-				self.tableView.reloadData()
-				print("COUNT: \(self.persons.count)")
-			}
+	func findPersonInBackgroundFromArray(searchText: String) {
+		var text = searchText
+		text.removeAll { ch in
+			return ch == " "
 		}
-//		var arr: [String] = []
-//		self.operation?.cancel()
-//		operation = BlockOperation.init(block: {
-//			for person in array {
-//				if person.lowercased().contains(searchText.lowercased()) {
-//					arr.append(person)
-//				}
-//			}
-//			DispatchQueue.main.async {
-//				self.persons = arr
-//				self.tableView.reloadData()
-//				self.operation = nil
-//			}
-//		})
-//		operation?.start()
+		var arr: [String] = []
+		self.operation?.cancel()
+		operation = BlockOperation.init(block: {
+			getUsers(user: text, params: self.token) { users in
+				if !text.isEmpty {
+					for user in users {
+						arr.append(user.login)
+					}
+				}
+				DispatchQueue.main.async {
+					self.persons = arr
+					self.tableView.reloadData()
+				}
+			}
+		})
+		operation?.start()
 	}
 	
 	//MARK: - UISearchBarDelegate
@@ -123,7 +96,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	}
 	
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-		findPersonInBackgroundFromArray(array: NamesList.names, searchText: searchText)
+		findPersonInBackgroundFromArray(searchText: searchText)
 	}
 	
 
@@ -131,6 +104,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return persons.count
+	}
+	
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		let detailVC = DetailViewController(user: persons[indexPath.row])
+		self.navigationController?.pushViewController(detailVC, animated: true)
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

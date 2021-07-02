@@ -41,13 +41,12 @@ func tokenPost(completion: @escaping (Token) -> ()) {
 //			if let response = response {
 //				print(response)
 //			}
-		
 		guard let data = data else { return }
 		guard error == nil else { return }
 		
 		do {
 			let token = try JSONDecoder().decode(Token.self, from: data)
-			print(token)
+//			print(token)
 			completion(token)
 		} catch {
 			print(error)
@@ -56,8 +55,7 @@ func tokenPost(completion: @escaping (Token) -> ()) {
 }
 
 func getUsers(user: String, params: Token, completion: @escaping ([User]) -> ()) {
-	guard let url = URL(string: "https://api.intra.42.fr/v2/users?range[login]=\(user),\(user + "z")") else { return }
-//	guard let url = URL(string: "https://api.intra.42.fr/v2/cursus/42/users?page[number]=\(count)&filter[login]=ttarsha") else { return }
+	guard let url = URL(string: "https://api.intra.42.fr/v2/users?range[login]=\(user),\(user + "z")&sort=login") else { return }
 	var request = URLRequest(url: url)
 	request.httpMethod = "GET"
 	request.addValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -73,10 +71,6 @@ func getUsers(user: String, params: Token, completion: @escaping ([User]) -> ())
 		do {
 			let token = try JSONDecoder().decode([User].self, from: data)
 			completion(token)
-			if token.isEmpty {
-				return
-			}
-//			print(token)
 		} catch {
 			print(error)
 		}
