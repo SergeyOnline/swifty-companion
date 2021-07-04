@@ -14,21 +14,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	var tableView: UITableView!
 	var searhBar: UISearchBar!
 	var operation: Operation?
-	private var token: Token!
 	var currentUser: CurrentUser!
 	
 	var persons: [User] = []
 	
 	override func loadView() {
 		super.loadView()
-		
-		tokenPost { token in
-			self.token = token
-		}
-		DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-			print("Token load")
-		}
-		
 	}
 	
 	override func viewDidLoad() {
@@ -76,10 +67,21 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		var arr: [User] = []
 		self.operation?.cancel()
 		operation = BlockOperation.init(block: {
-			getUsers(user: text, params: self.token) { users in
+			getUsers(user: text, token: CurrentToken, filtered: false) { users in
 				if !text.isEmpty {
 					for user in users {
 						arr.append(user)
+					}
+					if arr.isEmpty {
+						getUsers(user: text, token: CurrentToken, filtered: true) { persons in
+							for person in persons {
+								arr.append(person)
+							}
+							DispatchQueue.main.async {
+								self.persons = arr
+								self.tableView.reloadData()
+							}
+						}
 					}
 				}
 				DispatchQueue.main.async {
@@ -122,7 +124,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		indicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
 		
 		indicator.startAnimating()
-		getUserInfo(userId: persons[indexPath.row].id, params: self.token) { user in
+		getUserInfo(userId: persons[indexPath.row].id, params: CurrentToken) { user in
 			DispatchQueue.main.async {
 				self.currentUser = user
 				let detailVC = DetailViewController(user: self.currentUser)

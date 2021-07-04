@@ -87,7 +87,7 @@ func tokenPost(completion: @escaping (Token) -> ()) {
 		guard error == nil else { return }
 		do {
 			let token = try JSONDecoder().decode(Token.self, from: data)
-//			print(token)
+			print(token)
 			completion(token)
 		} catch {
 			print(error)
@@ -95,12 +95,21 @@ func tokenPost(completion: @escaping (Token) -> ()) {
 	}.resume()
 }
 
-func getUsers(user: String, params: Token, completion: @escaping ([User]) -> ()) {
-	guard let url = URL(string: "https://api.intra.42.fr/v2/users?range[login]=\(user),\(user + "z")&sort=login") else { return }
+func getUsers(user: String, token: Token?, filtered: Bool, completion: @escaping ([User]) -> ()) {
+	if token == nil {
+		return
+	}
+	var params = ""
+	if filtered {
+		params = "filter[login]=\(user.lowercased())"
+	} else {
+		params = "range[login]=\(user),\(user + "z")&sort=login"
+	}
+	guard let url = URL(string: "https://api.intra.42.fr/v2/users?\(params)") else { return }
 	var request = URLRequest(url: url)
 	request.httpMethod = "GET"
 	request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-	request.addValue("Bearer " + params.access_token, forHTTPHeaderField: "Authorization")
+	request.addValue("Bearer " + token!.access_token, forHTTPHeaderField: "Authorization")
 	let session = URLSession.shared
 	session.dataTask(with: request) { data, response, error in
 //		if let response = response {
@@ -119,12 +128,15 @@ func getUsers(user: String, params: Token, completion: @escaping ([User]) -> ())
 	}.resume()
 }
 
-func getUserInfo(userId: Int, params: Token, completion: @escaping (CurrentUser) -> ()) {
+func getUserInfo(userId: Int, params: Token?, completion: @escaping (CurrentUser) -> ()) {
+	if params == nil {
+		return
+	}
 	guard let url = URL(string: "https://api.intra.42.fr/v2/users/\(userId)") else { return }
 	var request = URLRequest(url: url)
 	request.httpMethod = "GET"
 	request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-	request.addValue("Bearer " + params.access_token, forHTTPHeaderField: "Authorization")
+	request.addValue("Bearer " + params!.access_token, forHTTPHeaderField: "Authorization")
 	let session = URLSession.shared
 	session.dataTask(with: request) { data, response, error in
 //		if let response = response {

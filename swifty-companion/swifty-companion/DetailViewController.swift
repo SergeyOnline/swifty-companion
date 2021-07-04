@@ -43,7 +43,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
 		let maxSkill = skills.max { s1, s2 in
 			s1.level < s2.level
 		}
-		maxLevel = maxSkill!.level
+		maxLevel = maxSkill?.level ?? 0.01
 	}
 	
     override func viewDidLoad() {
@@ -123,23 +123,23 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
 		if indexPath.section == 0 {
 			switch indexPath.row {
 			case 0:
-				cell.textLabel?.text = "Login"
-				cell.detailTextLabel?.text = user.login
+				cell.detailTextLabel?.text = "Login"
+				cell.textLabel?.text = user.login
 			case 1:
-				cell.textLabel?.text = "First name"
-				cell.detailTextLabel?.text = user.first_name
+				cell.detailTextLabel?.text = "First name"
+				cell.textLabel?.text = user.first_name
 			case 2:
-				cell.textLabel?.text = "last Name"
-				cell.detailTextLabel?.text = user.last_name
+				cell.detailTextLabel?.text = "last Name"
+				cell.textLabel?.text = user.last_name
 			case 3:
-				cell.textLabel?.text = "Email"
-				cell.detailTextLabel?.text = user.email
+				cell.detailTextLabel?.text = "Email"
+				cell.textLabel?.text = user.email
 			case 4:
-				cell.textLabel?.text = "Correction points"
-				cell.detailTextLabel?.text = String(user.correction_point)
+				cell.detailTextLabel?.text = "Correction points"
+				cell.textLabel?.text = String(user.correction_point)
 			case 5:
-				cell.textLabel?.text = "Wallet"
-				cell.detailTextLabel?.text = String(user.wallet)
+				cell.detailTextLabel?.text = "Wallet"
+				cell.textLabel?.text = String(user.wallet)
 			default:
 				break
 			}
@@ -147,15 +147,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
 			cell.textLabel?.text = skills[indexPath.row].name
 			let level = (Double(Int(skills[indexPath.row].level * 100))) / 100
 			cell.detailTextLabel?.text = String(level)
-			let percent = skills[indexPath.row].level / maxLevel 
-			
-//			let percent = skills[indexPath.row].level - Double(Int(skills[indexPath.row].level))
-			
-//			let progressView = UIProgressView()
-//			progressView.progress = Float(percent)
-//			progressView.progressViewStyle = .bar
-//			cell.backgroundView = progressView
-	
+			let scaleFactor = skills[indexPath.row].level / maxLevel 
 			
 			let cellView = UIView()
 			cellView.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
@@ -166,7 +158,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
 			cellView.leftAnchor.constraint(equalTo: cell.leftAnchor).isActive = true
 			cellView.topAnchor.constraint(equalTo: cell.topAnchor).isActive = true
 			cellView.bottomAnchor.constraint(equalTo: cell.bottomAnchor).isActive = true
-			cellView.rightAnchor.constraint(equalTo: cell.leftAnchor, constant: cell.frame.maxX * CGFloat(percent)).isActive = true
+			cellView.rightAnchor.constraint(equalTo: cell.leftAnchor, constant: cell.frame.maxX * CGFloat(scaleFactor)).isActive = true
 			
 		} else if indexPath.section == 2 {
 			let names = projects.sorted { return $0.project.name < $1.project.name }
