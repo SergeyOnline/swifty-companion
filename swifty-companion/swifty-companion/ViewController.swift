@@ -15,9 +15,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	var searhBar: UISearchBar!
 	var operation: Operation?
 	private var token: Token!
+	var currentUser: CurrentUser!
 	
-	
-	var persons: [String] = []
+	var persons: [User] = []
 	
 	override func loadView() {
 		super.loadView()
@@ -41,7 +41,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		searhBar.autoresizingMask = .flexibleWidth
 		searhBar.placeholder = "search"
 		searhBar.delegate = self
-		searhBar.tintColor = .black
+		if self.traitCollection.userInterfaceStyle == .dark {
+			self.navigationController?.navigationBar.tintColor = .white
+			searhBar.tintColor = .white
+		} else {
+			self.navigationController?.navigationBar.tintColor = .black
+			searhBar.tintColor = .black
+		}
 		searhBar.searchBarStyle = .minimal
 		
 		tableView = UITableView(frame: self.view.frame, style: .insetGrouped)
@@ -67,13 +73,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		text.removeAll { ch in
 			return ch == " "
 		}
-		var arr: [String] = []
+		var arr: [User] = []
 		self.operation?.cancel()
 		operation = BlockOperation.init(block: {
 			getUsers(user: text, params: self.token) { users in
 				if !text.isEmpty {
 					for user in users {
-						arr.append(user.login)
+						arr.append(user)
 					}
 				}
 				DispatchQueue.main.async {
@@ -107,15 +113,31 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	}
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let detailVC = DetailViewController(user: persons[indexPath.row])
-		self.navigationController?.pushViewController(detailVC, animated: true)
+		self.tableView.deselectRow(at: indexPath, animated: true)
+		let indicator = UIActivityIndicatorView(style: .large)
+		indicator.color = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+		indicator.translatesAutoresizingMaskIntoConstraints = false
+		self.view.addSubview(indicator)
+		indicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
+		indicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+		
+		indicator.startAnimating()
+		getUserInfo(userId: persons[indexPath.row].id, params: self.token) { user in
+			DispatchQueue.main.async {
+				self.currentUser = user
+				let detailVC = DetailViewController(user: self.currentUser)
+				self.navigationController?.pushViewController(detailVC, animated: true)
+				indicator.stopAnimating()
+				indicator.removeFromSuperview()
+			}
+		}
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
 		let	cell = tableView.dequeueReusableCell(withIdentifier: idPersonCell) as! PersonCell
 		
-		cell.textLabel?.text = persons[indexPath.row]
+		cell.textLabel?.text = persons[indexPath.row].login
 		cell.backgroundColor = .systemGray6
 		return cell
 	}
