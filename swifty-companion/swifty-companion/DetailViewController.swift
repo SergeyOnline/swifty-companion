@@ -11,6 +11,7 @@ import UIKit
 class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	
 	private var user: CurrentUser!
+	private var maxLevel: Double!
 	var tableView: UITableView!
 	let cellId = "InfoCell"
 	var projects: [ProjectsUsers] = []
@@ -39,6 +40,10 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
 //				skills = circus.skills
 //			}
 		}
+		let maxSkill = skills.max { s1, s2 in
+			s1.level < s2.level
+		}
+		maxLevel = maxSkill!.level
 	}
 	
     override func viewDidLoad() {
@@ -142,7 +147,9 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
 			cell.textLabel?.text = skills[indexPath.row].name
 			let level = (Double(Int(skills[indexPath.row].level * 100))) / 100
 			cell.detailTextLabel?.text = String(level)
-			let percent = skills[indexPath.row].level - Double(Int(skills[indexPath.row].level))
+			let percent = skills[indexPath.row].level / maxLevel 
+			
+//			let percent = skills[indexPath.row].level - Double(Int(skills[indexPath.row].level))
 			
 //			let progressView = UIProgressView()
 //			progressView.progress = Float(percent)
