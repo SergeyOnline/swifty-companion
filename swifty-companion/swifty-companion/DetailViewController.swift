@@ -7,6 +7,7 @@
 
 
 import UIKit
+import CoreData
 
 class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	
@@ -16,6 +17,9 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
 	let cellId = "InfoCell"
 	var projects: [ProjectsUsers] = []
 	var skills: [Skills] = []
+	var isSkillsNeedView: Bool!
+	var isProjectsNeedView: Bool!
+	var container: NSPersistentContainer!
 	
 	init(user: CurrentUser) {
 		self.user = user
@@ -28,6 +32,21 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
 	
 	override func loadView() {
 		super.loadView()
+		
+		guard container != nil else {
+			fatalError("This view needs a persistent container.")
+		}
+		let context = self.container.viewContext
+		var settingsArray: [Settings] = []
+		let request: NSFetchRequest<Settings> = Settings.fetchRequest()
+		do {
+			settingsArray = try context.fetch(request)
+			isSkillsNeedView = settingsArray[0].skills
+			isProjectsNeedView = settingsArray[0].projects
+		} catch {
+			let error = error as NSError
+			fatalError("Unresolved error \(error), \(error.userInfo)")
+		}
 		
 		for project in user.projects_users {
 			if project.status == "finished" && (project.cursus_ids.contains(1) || project.cursus_ids.contains(21)) {
@@ -79,9 +98,9 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
 	
 	func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		if section == 1 {
-			return "skills"
+			return isSkillsNeedView ? "skills" : ""
 		} else if section == 2 {
-			return "projects"
+			return isProjectsNeedView ? "projects" : ""
 		}
 		return nil
 	}
@@ -89,6 +108,10 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
 	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
 		if section == 0 {
 			return self.view.frame.width
+		} else if section == 1 && !isSkillsNeedView {
+			return 0
+		} else if section == 2 && !isProjectsNeedView {
+			return 0
 		}
 		return 22
 	}
@@ -96,9 +119,9 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
 		if section == 0 {
 			return 6
 		} else if section == 1 {
-			return skills.count
+			return isSkillsNeedView ? skills.count : 0
 		} else {
-			return projects.count
+			return isProjectsNeedView ? projects.count: 0
 		}
 	}
 	

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 var CurrentToken: Token? = nil
 var GlobalColor: UIColor = .black
@@ -16,10 +17,44 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 	func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 		
+		let context = persistentContainer.viewContext
+		var settingsArray: [Settings] = []
+		let request: NSFetchRequest<Settings> = Settings.fetchRequest()
+		
+		do {
+			settingsArray = try context.fetch(request)
+			print("SETTINGS ARRAY COUNT \(settingsArray.count)")
+			if settingsArray.count == 0 {
+				print("empty CONTEX")
+				let settings = Settings(context: context)
+				settings.projects = true
+				settings.skills = true
+				saveContext()
+			}
+		} catch {
+			let error = error as NSError
+			fatalError("Unresolved error \(error), \(error.userInfo)")
+		}
+		
+		do {
+			settingsArray = try context.fetch(request)
+			for elem in settingsArray {
+				print("Skills: \(elem.skills), Projects: \(elem.projects)")
+			}
+			print("COUNT: \(settingsArray.count)")
+		} catch {
+			let error = error as NSError
+			fatalError("Unresolved error \(error), \(error.userInfo)")
+		}
+		
 		
 		guard let windowScene = (scene as? UIWindowScene) else { return }
 		window = UIWindow(windowScene: windowScene)
-		let viewController = ViewController()
+		let viewController: ViewController = {
+			let vc = ViewController()
+			vc.container = self.persistentContainer
+			return vc
+		}()
 		let navigationVC = UINavigationController(rootViewController: viewController)
 //		navigationVC.navigationBar.tintColor = .black
 		navigationVC.navigationBar.barTintColor = .systemGray5
@@ -62,5 +97,32 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	}
 
 
+	
+	// MARK: - Core Data stack
+	
+	lazy var persistentContainer: NSPersistentContainer = {
+		let container = NSPersistentContainer(name: "swifty-companion")
+		container.loadPersistentStores { description, error in
+			if let error = error {
+				fatalError("Unable to load persistent stores: \(error)")
+			}
+		}
+		return container
+	}()
+	
+	// MARK: - Core Data Saving support
+
+	func saveContext () {
+		let context = persistentContainer.viewContext
+		if context.hasChanges {
+			do {
+				try context.save()
+			} catch {
+				let nserror = error as NSError
+				fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+			}
+		}
+	}
+	
 }
 

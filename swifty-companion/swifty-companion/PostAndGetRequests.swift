@@ -1,5 +1,5 @@
 //
-//  PostAndGet.swift
+//  PostAndGetRequests.swift
 //  swifty-companion
 //
 //  Created by Сергей on 02.07.2021.

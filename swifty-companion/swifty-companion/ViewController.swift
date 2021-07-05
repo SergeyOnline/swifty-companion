@@ -6,10 +6,11 @@
 //
 
 import UIKit
+import CoreData
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
 	
-	
+	var container: NSPersistentContainer!
 	private let idPersonCell = "PersonCell"
 	var tableView: UITableView!
 	var searhBar: UISearchBar!
@@ -24,9 +25,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		guard container != nil else {
+			fatalError("This view needs a persistent container.")
+		}
 		
 		self.navigationItem.title = "42 Intra"
 		view.backgroundColor = .systemGray6
+		let rightBarButton = UIBarButtonItem(title: "settings", style: .plain, target: self, action: #selector(rightBarButtonAction))
+		self.navigationItem.rightBarButtonItem = rightBarButton
 		
 		searhBar = UISearchBar()
 		searhBar.autoresizingMask = .flexibleWidth
@@ -127,7 +133,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		getUserInfo(userId: persons[indexPath.row].id, params: CurrentToken) { user in
 			DispatchQueue.main.async {
 				self.currentUser = user
-				let detailVC = DetailViewController(user: self.currentUser)
+				let detailVC: DetailViewController = {
+					let vc = DetailViewController(user: self.currentUser)
+					vc.container = self.container
+					return vc
+				}()
 				self.navigationController?.pushViewController(detailVC, animated: true)
 				indicator.stopAnimating()
 				indicator.removeFromSuperview()
@@ -143,7 +153,19 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		cell.backgroundColor = .systemGray6
 		return cell
 	}
-
-
+	
+	//MARK: - Actions
+	@objc func rightBarButtonAction(sender: UIBarButtonItem) {
+		let settingsVC: SettingsViewController = {
+			let vc = SettingsViewController()
+			vc.container = self.container
+			return vc
+		}()
+		self.present(settingsVC, animated: true) {
+			
+		}
+		print("BUTTON")
+	}
+	
 }
 

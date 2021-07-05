@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8767B9D72691CB1900A09523 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8767B9D62691CB1900A09523 /* SettingsViewController.swift */; };
+		8767B9E1269216AE00A09523 /* swifty-companion.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8767B9DF269216AE00A09523 /* swifty-companion.xcdatamodeld */; };
 		876876792690A789005860E4 /* InfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876876782690A789005860E4 /* InfoCell.swift */; };
 		877D8B8B268E1C4300B9408F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 877D8B8A268E1C4300B9408F /* AppDelegate.swift */; };
 		877D8B8D268E1C4300B9408F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 877D8B8C268E1C4300B9408F /* SceneDelegate.swift */; };
@@ -15,11 +17,13 @@
 		877D8B94268E1C4400B9408F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 877D8B93268E1C4400B9408F /* Assets.xcassets */; };
 		877D8B97268E1C4400B9408F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 877D8B95268E1C4400B9408F /* LaunchScreen.storyboard */; };
 		877D8BA3268E563100B9408F /* PersonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 877D8BA2268E563100B9408F /* PersonCell.swift */; };
-		877E6862268F340C00D9BEBB /* PostAndGet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 877E6861268F340C00D9BEBB /* PostAndGet.swift */; };
+		877E6862268F340C00D9BEBB /* PostAndGetRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 877E6861268F340C00D9BEBB /* PostAndGetRequests.swift */; };
 		877E6864268F8C4300D9BEBB /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 877E6863268F8C4300D9BEBB /* DetailViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8767B9D62691CB1900A09523 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		8767B9E0269216AE00A09523 /* swifty-companion.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "swifty-companion.xcdatamodel"; sourceTree = "<group>"; };
 		876876782690A789005860E4 /* InfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoCell.swift; sourceTree = "<group>"; };
 		877D8B87268E1C4300B9408F /* swifty-companion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "swifty-companion.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		877D8B8A268E1C4300B9408F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -30,7 +34,7 @@
 		877D8B96268E1C4400B9408F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		877D8B98268E1C4400B9408F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		877D8BA2268E563100B9408F /* PersonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonCell.swift; sourceTree = "<group>"; };
-		877E6861268F340C00D9BEBB /* PostAndGet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostAndGet.swift; sourceTree = "<group>"; };
+		877E6861268F340C00D9BEBB /* PostAndGetRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostAndGetRequests.swift; sourceTree = "<group>"; };
 		877E6863268F8C4300D9BEBB /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -68,13 +72,15 @@
 				877D8B8C268E1C4300B9408F /* SceneDelegate.swift */,
 				877D8B8E268E1C4300B9408F /* ViewController.swift */,
 				877E6863268F8C4300D9BEBB /* DetailViewController.swift */,
-				877E6861268F340C00D9BEBB /* PostAndGet.swift */,
+				8767B9D62691CB1900A09523 /* SettingsViewController.swift */,
+				877E6861268F340C00D9BEBB /* PostAndGetRequests.swift */,
 				877D8BA2268E563100B9408F /* PersonCell.swift */,
 				876876782690A789005860E4 /* InfoCell.swift */,
 				877D8B90268E1C4300B9408F /* Main.storyboard */,
 				877D8B93268E1C4400B9408F /* Assets.xcassets */,
 				877D8B95268E1C4400B9408F /* LaunchScreen.storyboard */,
 				877D8B98268E1C4400B9408F /* Info.plist */,
+				8767B9DF269216AE00A09523 /* swifty-companion.xcdatamodeld */,
 			);
 			path = "swifty-companion";
 			sourceTree = "<group>";
@@ -151,11 +157,13 @@
 			files = (
 				877D8BA3268E563100B9408F /* PersonCell.swift in Sources */,
 				877D8B8F268E1C4300B9408F /* ViewController.swift in Sources */,
-				877E6862268F340C00D9BEBB /* PostAndGet.swift in Sources */,
+				877E6862268F340C00D9BEBB /* PostAndGetRequests.swift in Sources */,
 				877D8B8B268E1C4300B9408F /* AppDelegate.swift in Sources */,
 				876876792690A789005860E4 /* InfoCell.swift in Sources */,
 				877D8B8D268E1C4300B9408F /* SceneDelegate.swift in Sources */,
+				8767B9E1269216AE00A09523 /* swifty-companion.xcdatamodeld in Sources */,
 				877E6864268F8C4300D9BEBB /* DetailViewController.swift in Sources */,
+				8767B9D72691CB1900A09523 /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -357,6 +365,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		8767B9DF269216AE00A09523 /* swifty-companion.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				8767B9E0269216AE00A09523 /* swifty-companion.xcdatamodel */,
+			);
+			currentVersion = 8767B9E0269216AE00A09523 /* swifty-companion.xcdatamodel */;
+			path = "swifty-companion.xcdatamodeld";
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 877D8B7F268E1C4300B9408F /* Project object */;
 }
