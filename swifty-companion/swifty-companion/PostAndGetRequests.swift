@@ -50,6 +50,10 @@ struct Skills: Decodable {
 	var level: Double
 }
 
+struct StatusCode: Decodable {
+	var statusCode: Int
+}
+
 
 struct CurrentUser: Decodable {
 	var id:		Int
@@ -66,7 +70,31 @@ struct CurrentUser: Decodable {
 	var wallet: Int
 	var projects_users: [ProjectsUsers]
 	var cursus_users: [Cursus]
+	var campus: [Campus]
 }
+
+struct Campus:Decodable {
+	var id: Int
+	var name: String
+}
+/*
+"campus": [
+	{
+	  "id": 1,
+	  "name": "Cluj",
+	  "time_zone": "Europe/Bucharest",
+	  "language": {
+		"id": 3,
+		"name": "Romanian",
+		"identifier": "ro",
+		"created_at": "2017-11-22T13:40:59.468Z",
+		"updated_at": "2017-11-22T13:41:26.139Z"
+	  },
+	  "users_count": 28,
+	  "vogsphere_id": 1
+	}
+  ],
+*/
 
 func tokenPost(completion: @escaping (Token) -> ()) {
 	guard let url = URL(string: TokenHTTP) else { return }
@@ -111,10 +139,19 @@ func getUsers(user: String, token: Token?, filtered: Bool, completion: @escaping
 	request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 	request.addValue("Bearer " + token!.access_token, forHTTPHeaderField: "Authorization")
 	let session = URLSession.shared
+	
 	session.dataTask(with: request) { data, response, error in
-//		if let response = response {
-//			print(response)
-//		}
+		if let response: HTTPURLResponse = response as? HTTPURLResponse {
+			if response.statusCode == 401 {
+				tokenPost { token in
+					CurrentToken = token
+				}
+				DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+					print("New token load")
+				}
+			}
+		}
+		
 		guard let data = data else { return }
 		guard error == nil else { return }
 		
@@ -139,9 +176,16 @@ func getUserInfo(userId: Int, params: Token?, completion: @escaping (CurrentUser
 	request.addValue("Bearer " + params!.access_token, forHTTPHeaderField: "Authorization")
 	let session = URLSession.shared
 	session.dataTask(with: request) { data, response, error in
-//		if let response = response {
-//			print(response)
-//		}
+		if let response: HTTPURLResponse = response as? HTTPURLResponse {
+			if response.statusCode == 401 {
+				tokenPost { token in
+					CurrentToken = token
+				}
+				DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+					print("New token load")
+				}
+			}
+		}
 		guard let data = data else { return }
 		guard error == nil else { return }
 		

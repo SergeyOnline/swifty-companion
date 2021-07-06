@@ -14,8 +14,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	private let idPersonCell = "PersonCell"
 	var tableView: UITableView!
 	var searhBar: UISearchBar!
-	var operation: Operation?
+//	var operation: Operation?
 	var currentUser: CurrentUser!
+	var loadIndicator: UIActivityIndicatorView!
 	
 	var persons: [User] = []
 	
@@ -25,6 +26,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
 		guard container != nil else {
 			fatalError("This view needs a persistent container.")
 		}
@@ -45,7 +47,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 			self.navigationController?.navigationBar.tintColor = .black
 			searhBar.tintColor = .black
 		}
+		
+		loadIndicator = UIActivityIndicatorView(style: .medium)
+		loadIndicator.color = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
+		loadIndicator.autoresizingMask = .init(arrayLiteral: [.flexibleLeftMargin, .flexibleRightMargin, .flexibleTopMargin, .flexibleBottomMargin])
 		searhBar.searchBarStyle = .minimal
+		searhBar.addSubview(loadIndicator)
+		loadIndicator.startAnimating()
+		loadIndicator.isHidden = true
 		
 		tableView = UITableView(frame: self.view.frame, style: .insetGrouped)
 		tableView.delegate = self
@@ -53,9 +62,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		tableView.register(PersonCell.self, forCellReuseIdentifier: idPersonCell)
 		
 		tableView.autoresizingMask = .init(arrayLiteral: .flexibleWidth, .flexibleHeight)
-
 		tableView.backgroundColor = .systemGray6
+	
 		self.view.addSubview(tableView)
+		
 	}
 	
 	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -71,8 +81,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 			return ch == " "
 		}
 		var arr: [User] = []
-		self.operation?.cancel()
-		operation = BlockOperation.init(block: {
+		self.loadIndicator.isHidden = true
+//		self.operation?.cancel()
+		loadIndicator.isHidden = false
+//		operation = BlockOperation.init(block: {
 			getUsers(user: text, token: CurrentToken, filtered: false) { users in
 				if !text.isEmpty {
 					for user in users {
@@ -86,6 +98,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 							DispatchQueue.main.async {
 								self.persons = arr
 								self.tableView.reloadData()
+								self.loadIndicator.isHidden = true
 							}
 						}
 					}
@@ -93,10 +106,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 				DispatchQueue.main.async {
 					self.persons = arr
 					self.tableView.reloadData()
+					self.loadIndicator.isHidden = true
 				}
 			}
-		})
-		operation?.start()
+//		})
+//		operation?.start()
 	}
 	
 	//MARK: - UISearchBarDelegate
@@ -121,6 +135,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	}
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		loadIndicator.isHidden = true
 		self.tableView.deselectRow(at: indexPath, animated: true)
 		let indicator = UIActivityIndicatorView(style: .large)
 		indicator.color = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1)
@@ -161,10 +176,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 			vc.container = self.container
 			return vc
 		}()
-		self.present(settingsVC, animated: true) {
-			
-		}
-		print("BUTTON")
+		self.present(settingsVC, animated: true) {}
 	}
 	
 }

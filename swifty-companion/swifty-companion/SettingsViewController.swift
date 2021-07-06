@@ -15,7 +15,6 @@ class SettingsViewController: UIViewController {
 	var container: NSPersistentContainer!
 	var settings: Settings!
 	
-	
     override func viewDidLoad() {
         super.viewDidLoad()
 		guard container != nil else {

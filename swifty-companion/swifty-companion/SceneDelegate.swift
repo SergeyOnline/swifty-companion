@@ -17,10 +17,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 	func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 		
+		tokenPost { token in
+			CurrentToken = token
+		}
+		DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+			print("Token load")
+		}
+		
 		let context = persistentContainer.viewContext
 		var settingsArray: [Settings] = []
 		let request: NSFetchRequest<Settings> = Settings.fetchRequest()
-		
 		do {
 			settingsArray = try context.fetch(request)
 			print("SETTINGS ARRAY COUNT \(settingsArray.count)")
@@ -72,12 +78,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	func sceneDidBecomeActive(_ scene: UIScene) {
 		// Called when the scene has moved from an inactive state to an active state.
 		// Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
-		tokenPost { token in
-			CurrentToken = token
-		}
-		DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-			print("Token load")
-		}
 	}
 
 	func sceneWillResignActive(_ scene: UIScene) {
