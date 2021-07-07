@@ -87,10 +87,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 //		operation = BlockOperation.init(block: {
 			getUsers(user: text, token: CurrentToken, filtered: false) { users in
 				if !text.isEmpty {
-					for user in users {
-						arr.append(user)
-					}
-					if arr.isEmpty {
+					if !users.isEmpty {
+						for user in users {
+							arr.append(user)
+						}
+					} else {
 						getUsers(user: text, token: CurrentToken, filtered: true) { persons in
 							for person in persons {
 								arr.append(person)
@@ -145,7 +146,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		indicator.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
 		
 		indicator.startAnimating()
-		getUserInfo(userId: persons[indexPath.row].id, params: CurrentToken) { user in
+		getUserInfo(userId: persons[indexPath.row].id, token: CurrentToken) { user in
 			DispatchQueue.main.async {
 				self.currentUser = user
 				let detailVC: DetailViewController = {
