@@ -186,8 +186,9 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
 		} else if indexPath.section == 2 {
 			let names = projects.sorted { return $0.project.name < $1.project.name }
 			cell.textLabel?.text = names[indexPath.row].project.name
-			cell.detailTextLabel?.text = String(names[indexPath.row].final_mark!)
-			if names[indexPath.row].final_mark! > 0 {
+			let finalMark = names[indexPath.row].final_mark ?? -1
+			cell.detailTextLabel?.text = finalMark == -1 ? "" : String(finalMark)
+			if finalMark > 0 {
 				cell.detailTextLabel?.textColor = .systemGreen
 			} else {
 				cell.detailTextLabel?.textColor = .systemRed
