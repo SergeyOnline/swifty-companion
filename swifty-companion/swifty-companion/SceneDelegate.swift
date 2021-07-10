@@ -20,18 +20,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		tokenPost { token in
 			CurrentToken = token
 		}
-		DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-			print("Token load")
-		}
 		
 		let context = persistentContainer.viewContext
 		var settingsArray: [Settings] = []
 		let request: NSFetchRequest<Settings> = Settings.fetchRequest()
 		do {
 			settingsArray = try context.fetch(request)
-			print("SETTINGS ARRAY COUNT \(settingsArray.count)")
 			if settingsArray.count == 0 {
-				print("empty CONTEX")
 				let settings = Settings(context: context)
 				settings.projects = true
 				settings.skills = true
@@ -42,18 +37,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			fatalError("Unresolved error \(error), \(error.userInfo)")
 		}
 		
-		do {
-			settingsArray = try context.fetch(request)
-			for elem in settingsArray {
-				print("Skills: \(elem.skills), Projects: \(elem.projects)")
-			}
-			print("COUNT: \(settingsArray.count)")
-		} catch {
-			let error = error as NSError
-			fatalError("Unresolved error \(error), \(error.userInfo)")
-		}
-		
-		
 		guard let windowScene = (scene as? UIWindowScene) else { return }
 		window = UIWindow(windowScene: windowScene)
 		let viewController: ViewController = {
@@ -62,7 +45,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 			return vc
 		}()
 		let navigationVC = UINavigationController(rootViewController: viewController)
-//		navigationVC.navigationBar.tintColor = .black
 		navigationVC.navigationBar.barTintColor = .systemGray5
 		window?.rootViewController = navigationVC
 		window?.makeKeyAndVisible()

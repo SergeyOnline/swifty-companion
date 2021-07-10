@@ -123,9 +123,6 @@ func getUsers(user: String, token: Token?, filtered: Bool, completion: @escaping
 				tokenPost { token in
 					CurrentToken = token
 				}
-				DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-					print("New token load")
-				}
 			}
 		}
 		guard let data = data else { return }
@@ -153,9 +150,6 @@ func getUserInfo(userId: Int, token: Token?, completion: @escaping (CurrentUser)
 			if response.statusCode == 401 {
 				tokenPost { token in
 					CurrentToken = token
-				}
-				DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-					print("New token load")
 				}
 			}
 		}

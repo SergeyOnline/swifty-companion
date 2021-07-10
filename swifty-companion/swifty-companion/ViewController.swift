@@ -33,7 +33,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		
 		self.navigationItem.title = "42 Intra"
 		view.backgroundColor = .systemGray6
-		let rightBarButton = UIBarButtonItem(title: "settings", style: .plain, target: self, action: #selector(rightBarButtonAction))
+//		let rightBarButton = UIBarButtonItem(title: "settings", style: .plain, target: self, action: #selector(rightBarButtonAction))
+		let rightBarButton = UIBarButtonItem(image: UIImage(named: "settings"), style: .plain, target: self, action: #selector(rightBarButtonAction))
 		self.navigationItem.rightBarButtonItem = rightBarButton
 		
 		searhBar = UISearchBar()
@@ -80,36 +81,40 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		text.removeAll { ch in
 			return ch == " "
 		}
+		if text.isEmpty {
+			self.persons = []
+			self.tableView.reloadData()
+			self.loadIndicator.isHidden = true
+			return
+		}
 		var arr: [User] = []
 		self.loadIndicator.isHidden = true
 //		self.operation?.cancel()
 		loadIndicator.isHidden = false
 //		operation = BlockOperation.init(block: {
-			getUsers(user: text, token: CurrentToken, filtered: false) { users in
-				if !text.isEmpty {
-					if !users.isEmpty {
-						for user in users {
-							arr.append(user)
-						}
-					} else {
-						getUsers(user: text, token: CurrentToken, filtered: true) { persons in
-							for person in persons {
-								arr.append(person)
-							}
-							DispatchQueue.main.async {
-								self.persons = arr
-								self.tableView.reloadData()
-								self.loadIndicator.isHidden = true
-							}
-						}
-					}
+		getUsers(user: text, token: CurrentToken, filtered: false) { users in
+			if !users.isEmpty {
+				for user in users {
+					arr.append(user)
 				}
 				DispatchQueue.main.async {
 					self.persons = arr
 					self.tableView.reloadData()
 					self.loadIndicator.isHidden = true
 				}
+			} else {
+				getUsers(user: text, token: CurrentToken, filtered: true) { persons in
+					for person in persons {
+						arr.append(person)
+					}
+					DispatchQueue.main.async {
+						self.persons = arr
+						self.tableView.reloadData()
+						self.loadIndicator.isHidden = true
+					}
+				}
 			}
+		}
 //		})
 //		operation?.start()
 	}
@@ -128,7 +133,28 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		findPersonInBackgroundFromArray(searchText: searchText)
 	}
 	
-
+	func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+		searchBar.text = ""
+		self.persons = []
+		self.tableView.reloadData()
+		self.loadIndicator.isHidden = true
+	}
+	
+//	func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+//		self.loadIndicator.isHidden = false
+//		var arr: [User] = []
+//		getUsers(user: searchBar.text!, token: CurrentToken, filtered: true) { persons in
+//			for person in persons {
+//				arr.append(person)
+//			}
+//			DispatchQueue.main.async {
+//				self.persons = arr
+//				self.tableView.reloadData()
+//				self.loadIndicator.isHidden = true
+//			}
+//		}
+//	}
+	
 	//MARK: - UITableViewDataSource
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

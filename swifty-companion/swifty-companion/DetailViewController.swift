@@ -70,6 +70,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
 		self.navigationItem.title = user.login
 		self.view.backgroundColor = .link
 		
+		
 		tableView = UITableView(frame: self.view.frame, style: .grouped)
 		tableView.delegate = self
 		tableView.dataSource = self
@@ -140,7 +141,6 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
 		setCellForIndexPath(&cell, indexPath: indexPath)
 		return cell
 	}
-	
 	
 	func setCellForIndexPath(_ cell: inout UITableViewCell, indexPath: IndexPath) {
 		if indexPath.section == 0 {
