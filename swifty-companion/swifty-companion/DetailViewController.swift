@@ -116,6 +116,7 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
 		}
 		return 22
 	}
+	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		if section == 0 {
 			return 6
