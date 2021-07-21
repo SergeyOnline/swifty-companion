@@ -123,6 +123,9 @@ func getUsers(user: String, token: Token?, filtered: Bool, completion: @escaping
 				tokenPost { token in
 					CurrentToken = token
 				}
+			} else if response.statusCode != 200 {
+				print("Warning: request limit exceeded (2 requests/second)")
+				return
 			}
 		}
 		guard let data = data else { return }
@@ -151,6 +154,9 @@ func getUserInfo(userId: Int, token: Token?, completion: @escaping (CurrentUser)
 				tokenPost { token in
 					CurrentToken = token
 				}
+			} else if response.statusCode != 200 {
+				print("Warning: request limit exceeded (2 requests/second)")
+				return
 			}
 		}
 		guard let data = data else { return }

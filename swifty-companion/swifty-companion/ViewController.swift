@@ -129,6 +129,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		searchBar.setShowsCancelButton(false, animated: true)
 	}
 	
+	//MARK: - Dynamic search
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
 		findPersonInBackgroundFromArray(searchText: searchText)
 	}
@@ -140,6 +141,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		self.loadIndicator.isHidden = true
 	}
 	
+	//MARK: - One-time request to the server
 //	func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
 //		self.loadIndicator.isHidden = false
 //		var arr: [User] = []
